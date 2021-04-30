@@ -1,5 +1,7 @@
 package application
 
+import "ml-x-men/internal/domain"
+
 var (
 	axisX = [8]int{-1, -1, -1, 0, 0, 1, 1, 1}
 	axisY = [8]int{-1, 0, 1, -1, 1, -1, 0, 1}
@@ -16,6 +18,10 @@ func (i interactor) IsMutant(matrix [][]byte) (bool, error) {
 		}
 	}
 	return isMutant, nil
+}
+
+func(i interactor) MutantCreate(dna string, isMutant bool) (domain.Mutant, error){
+	
 }
 
 func searchWordInMatrix(matrix [][]byte, word string) bool {
