@@ -20,8 +20,13 @@ func (i interactor) IsMutant(matrix [][]byte) (bool, error) {
 	return isMutant, nil
 }
 
-func(i interactor) MutantCreate(dna string, isMutant bool) (domain.Mutant, error){
-	
+func (i interactor) GetByDna(dna string) (*domain.Person, error) {
+	return i.storage.PersonGetByDna(dna)
+
+}
+func (i interactor) PersonCreate(dna string, isMutant bool) (*domain.Person, error) {
+	return i.storage.PersonCreate(dna, isMutant)
+
 }
 
 func searchWordInMatrix(matrix [][]byte, word string) bool {

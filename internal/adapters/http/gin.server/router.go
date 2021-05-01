@@ -30,7 +30,7 @@ func (rH RouterHandler) SetRoutes(r *gin.Engine) {
 	api.Use(rH.errorCatcher())
 
 	rH.mutantRoutes(api)
-
+	rH.statsRoutes(api)
 	r.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
@@ -40,6 +40,10 @@ func (rH RouterHandler) SetRoutes(r *gin.Engine) {
 func (rH RouterHandler) mutantRoutes(api *gin.RouterGroup) {
 	mutantGroup := api.Group("/mutant")
 	mutantGroup.POST("", rH.mutantPost)
+}
+func (rH RouterHandler) statsRoutes(api *gin.RouterGroup) {
+	statsGroup := api.Group("/stats")
+	statsGroup.GET("", rH.statsGet)
 }
 
 func (rH RouterHandler) errorCatcher() gin.HandlerFunc {

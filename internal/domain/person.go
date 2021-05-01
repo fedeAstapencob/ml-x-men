@@ -1,7 +1,7 @@
 package domain
 
 type Person struct {
-	ID int64
-	Dna string
+	ID       uint
+	Dna      string
 	IsMutant bool
 }

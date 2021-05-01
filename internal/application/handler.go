@@ -1,29 +1,37 @@
 package application
 
-import "log"
+import (
+	"log"
+	"ml-x-men/internal/domain"
+)
 
 type Handler interface {
-	MutantLogic
+	PersonLogic
+	StatLogic
 }
 
-type MutantLogic interface {
+type PersonLogic interface {
+	GetByDna(dna string) (*domain.Person, error)
 	IsMutant(matrix [][]byte) (bool, error)
+	PersonCreate(dna string, isMutant bool) (*domain.Person, error)
 }
-
+type StatLogic interface {
+	StatsGetMutantVsHuman() (mutantCount, humanCount int64, ratio float32, err error)
+}
 type HandlerConstructor struct {
-	Logger     Logger
-	MutantRepo MutantRepository
+	Logger  Logger
+	Storage Storage
 }
 
 func (c HandlerConstructor) New() Handler {
 	if c.Logger == nil {
 		log.Fatal("missing Logger")
 	}
-	//if c.MutantRepo == nil {
-	//	log.Fatal("missing MutantRepo")
-	//}
+	if c.Storage == nil {
+		log.Fatal("missing Storage")
+	}
 	return interactor{
-		logger:     c.Logger,
-		mutantRepo: c.MutantRepo,
+		logger:  c.Logger,
+		storage: c.Storage,
 	}
 }

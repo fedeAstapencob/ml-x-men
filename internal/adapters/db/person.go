@@ -1,35 +1,59 @@
-package personDB
+package db
 
 import (
+	"database/sql"
+	"errors"
+	"gorm.io/gorm"
 	"ml-x-men/internal/domain"
 )
-const (
-	insertPersonSQL = `INSERT INTO person(dna, is_mutant) VALUES (?,?)`
-	selectByDnaSQL = `SELECT * FROM person WHERE dna = ?`
-)
-func (db DB) Create(dna string, isMutant bool) (*domain.Person, error){
 
-	person, err := db.Exec(insertPersonSQL, dna, isMutant)
-	if err != nil {
-		return nil, err
+type PersonDB struct {
+	gorm.Model
+	Dna      string
+	IsMutant sql.NullBool
+}
+
+func (PersonDB) TableName() string {
+	return "person"
+}
+
+const (
+	selectByDnaSQL = `SELECT id, dna, is_mutant FROM person WHERE dna = ?`
+)
+
+func (db DB) PersonCreate(dna string, isMutant bool) (*domain.Person, error) {
+	var personDB = &PersonDB{Dna: dna}
+	personDB.IsMutant = sql.NullBool{
+		Bool:  isMutant,
+		Valid: true,
 	}
-	personId, err := person.LastInsertId()
-	if err != nil {
-		return nil, err
+	result := db.Create(personDB)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 	return &domain.Person{
-		ID:       personId,
+		ID:       personDB.ID,
 		Dna:      dna,
 		IsMutant: isMutant,
 	}, nil
 }
 
-func (db DB) GetByDna(dna string) (*domain.Person, error){
+func (db DB) PersonGetByDna(dna string) (*domain.Person, error) {
 	var person domain.Person
-	row, err := db.Queryx(selectByDnaSQL,dna)
-	if err != nil {
-		return &person, err
+	var personDB PersonDB
+	result := db.First(&personDB, "dna = ?", dna)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			//person not found
+			return nil, nil
+		} else {
+			return nil, result.Error
+		}
 	}
-	err = row.Scan(person)
-	return &person, err
+	person = domain.Person{
+		ID:       personDB.ID,
+		Dna:      personDB.Dna,
+		IsMutant: personDB.IsMutant.Bool,
+	}
+	return &person, nil
 }
