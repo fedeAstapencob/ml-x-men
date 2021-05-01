@@ -9,6 +9,18 @@ SELECT SUM(CASE WHEN p.is_mutant = 1 THEN 1 ELSE 0 END) AS count_mutant_dna, SUM
 
 func (db DB) StatsGetMutantVsHuman() (mutantCount, humanCount int64, ratio float32, err error) {
 	row := db.Raw(selectStatsSQL).Row()
-	err = row.Scan(&mutantCount, &humanCount, &ratio)
+	var mutantPointer, humanPointer *int64
+	var ratioPointer *float32
+	err = row.Scan(&mutantPointer, &humanPointer, &ratioPointer)
+	if mutantPointer != nil {
+		mutantCount = *mutantPointer
+	}
+	if humanPointer != nil {
+		humanCount = *humanPointer
+	}
+	if ratioPointer != nil {
+		ratio = *ratioPointer
+	}
+
 	return
 }
