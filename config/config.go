@@ -37,6 +37,7 @@ var envFuncMapper = map[string]envFn{
 	"DATABASE_PORT":     overrideDatabasePort,
 	"DATABASE_NAME":     overrideDatabaseName,
 	"DATABASE_PASSWORD": overrideDatabasePassword,
+	"PORT": overrideAPIPort,
 }
 
 func New() *Config {
@@ -125,4 +126,16 @@ func overrideDatabasePassword(password string) error {
 		return nil
 	}
 	return fmt.Errorf("DATABASE PASSWORD ENV NOT FOUND")
+}
+// Override database password env if variable exists
+func overrideAPIPort(port string) error {
+	if port != "" {
+		portInt, err := strconv.ParseInt(port, 10, 32)
+		if err != nil {
+			return err
+		}
+		c.APIConfig.Port = int(portInt)
+		return nil
+	}
+	return fmt.Errorf("API PORT ENV NOT FOUND")
 }
