@@ -20,7 +20,7 @@ type DBConfig struct {
 }
 type APIConfig struct {
 	Port      int `yaml:"port"`
-	DebugMode int `yaml:"debugMode"`
+	ServerMode string `yaml:"ginServerMode"`
 }
 type Config struct {
 	APIConfig APIConfig `yaml:"apiConfig"`
@@ -40,8 +40,9 @@ var envFuncMapper = map[string]envFn{
 }
 
 func New() *Config {
-	var env string
+	env := os.Getenv("APP_ENV")
 	var envCfg Config
+
 	yamlFile, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
 		logrus.Errorf("Unmarshal: %v", err)
@@ -67,7 +68,6 @@ func New() *Config {
 	//override with env variables
 	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
-		fmt.Println(pair[0])
 		if op, ok := envFuncMapper[pair[0]]; ok {
 			err = op(pair[1])
 			if err != nil {

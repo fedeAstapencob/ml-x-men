@@ -26,20 +26,13 @@ type GinServer struct {
 }
 
 // NewServer
-func NewServer(port int, mode GinServerMode) GinServer {
+func NewServer(port int, ginServerMode string) GinServer {
 	s := GinServer{}
 	s.port = port
 
 	s.Router = gin.New()
 
-	switch mode {
-	case DebugMode:
-		gin.SetMode(gin.DebugMode)
-	case TestMode:
-		gin.SetMode(gin.TestMode)
-	default:
-		gin.SetMode(gin.ReleaseMode)
-	}
+	gin.SetMode(ginServerMode)
 
 	s.Router.Use(gin.Recovery())
 

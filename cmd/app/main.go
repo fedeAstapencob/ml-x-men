@@ -10,7 +10,7 @@ import (
 
 func main() {
 	appConfig := config.New()
-	ginServer := server.NewServer(8082, server.DebugMode)
+	ginServer := server.NewServer(appConfig.APIConfig.Port, appConfig.APIConfig.ServerMode)
 
 	routerLogger := logger.NewLogger("TEST",
 		"DEBUG",
