@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/imdario/mergo"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -17,22 +18,30 @@ type DBConfig struct {
 	Host     string `yaml:"host"`
 	Port     uint   `yaml:"port"`
 }
+type APIConfig struct {
+	Port      int `yaml:"port"`
+	DebugMode int `yaml:"debugMode"`
+}
 type Config struct {
-	DBConfig DBConfig `yaml:"db"`
+	APIConfig APIConfig `yaml:"apiConfig"`
+	DBConfig  DBConfig  `yaml:"db"`
 }
 
 var c Config
 
-type envFn func(string)error
+type envFn func(string) error
 
 var envFuncMapper = map[string]envFn{
-	"DATABASE_HOST" : overrideDatabaseHost,
-	"DATABASE_USER": overrideDatabaseUser,
-	"DATABASE_PORT": overrideDatabasePort,
-	"DATABASE_NAME": overrideDatabaseName,
+	"DATABASE_HOST":     overrideDatabaseHost,
+	"DATABASE_USER":     overrideDatabaseUser,
+	"DATABASE_PORT":     overrideDatabasePort,
+	"DATABASE_NAME":     overrideDatabaseName,
 	"DATABASE_PASSWORD": overrideDatabasePassword,
 }
+
 func New() *Config {
+	var env string
+	var envCfg Config
 	yamlFile, err := ioutil.ReadFile("./config/config.yaml")
 	if err != nil {
 		logrus.Errorf("Unmarshal: %v", err)
@@ -41,7 +50,22 @@ func New() *Config {
 	if err != nil {
 		logrus.Errorf("Unmarshal: %v", err)
 	}
-	for _, e := range os.Environ(){
+	if env != "" {
+		yamlFile, err = ioutil.ReadFile(fmt.Sprintf("./config/config.%s.yaml", env))
+		if err != nil {
+			logrus.Warnf("config.%s.yaml .Get err %v ", env, err)
+		}
+		err = yaml.Unmarshal(yamlFile, &c)
+		if err != nil {
+			logrus.Errorf("Unmarshal: %v", err)
+		}
+
+		if err = mergo.MergeWithOverwrite(&c, envCfg); err != nil {
+			logrus.Errorf("Merge configs: %v", err)
+		}
+	}
+	//override with env variables
+	for _, e := range os.Environ() {
 		pair := strings.SplitN(e, "=", 2)
 		fmt.Println(pair[0])
 		if op, ok := envFuncMapper[pair[0]]; ok {
@@ -84,7 +108,6 @@ func overrideDatabasePort(port string) error {
 	}
 	return fmt.Errorf("DATABASE PORT ENV NOT FOUND")
 }
-
 
 // Override database name env if variable exists
 func overrideDatabaseName(name string) error {
