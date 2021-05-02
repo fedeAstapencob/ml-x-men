@@ -3,6 +3,7 @@ package gin_server
 import (
 	"github.com/gin-gonic/gin"
 	"ml-x-men/internal/adapters/json_formatter"
+	"ml-x-men/internal/utils"
 	"net/http"
 	"strings"
 )
@@ -27,7 +28,7 @@ func (rH RouterHandler) mutantPost(c *gin.Context) {
 		c.Status(http.StatusInternalServerError)
 		return
 	} else if person == nil {
-		matrixDna := buildMatrixDna(body.Dna)
+		matrixDna := utils.BuildMatrixDna(body.Dna)
 		isMutant, err := rH.ucHandler.IsMutant(matrixDna)
 		if err != nil {
 			log(err, "Error evaluating IsMutant")
@@ -49,17 +50,4 @@ func (rH RouterHandler) mutantPost(c *gin.Context) {
 		c.Status(http.StatusForbidden)
 		return
 	}
-}
-
-func buildMatrixDna(dna []string) [][]byte {
-	var matrix [][]byte
-	for i := 0; i < len(dna); i++ {
-		var charsValue []byte
-		dnaChars := dna[i]
-		for _, char := range dnaChars {
-			charsValue = append(charsValue, byte(char))
-		}
-		matrix = append(matrix, charsValue)
-	}
-	return matrix
 }

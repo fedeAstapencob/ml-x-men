@@ -3,6 +3,8 @@ BUILD=`git rev-parse HEAD`
 COVERAGEALL=coverage-all.out
 COVERHTML=test-coverage
 
+test:
+	go test ./...
 cover:
 	go test ./... -coverprofile=coverage.out
 
