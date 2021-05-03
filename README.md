@@ -49,4 +49,6 @@ go run cmd/app/main.go
 
 ## Nivel 1 exercise 
 
+The function is `isMutantPerson` in the `internal/application/person.go` file
 
+The order is O(n*n). where n is the matrix size 

@@ -21,6 +21,7 @@ func (i interactor) PersonCreate(dna string, isMutant bool) (*domain.Person, err
 
 }
 
+// Ejercicio 1
 func isMutantPerson(matrix [][]byte) bool {
 	for i := 0; i < len(matrix); i++ {
 		for j := 0; j < len(matrix[0]); j++ {
