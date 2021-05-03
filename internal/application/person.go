@@ -33,7 +33,7 @@ func searchWordInMatrix(matrix [][]byte) bool {
 }
 
 func searchStringInMatrix(matrix [][]byte, row int, col int, letter byte, searchLength int) bool {
-	letterString := string(letter)
+
 	// search same value in all possible directions
 	for i := 0; i < 8; i++ {
 		matchedCount := row + axisX[i]
@@ -45,9 +45,7 @@ func searchStringInMatrix(matrix [][]byte, row int, col int, letter byte, search
 				break
 			}
 			// the char in the given position doesn't match the searched char
-			var matrixValue = string(matrix[rowDirection][columnDirection])
-			var wordValue = letterString
-			if matrixValue != wordValue {
+			if matrix[rowDirection][columnDirection] != letter {
 				break
 			}
 			// move to the next position
