@@ -37,6 +37,7 @@ If you change your DB data, please update the `config/config.yaml` file with the
 ### Database script
 
 If you don't want to use docker, you can find the sql with the data struct in the `./dockerized/db/dump.sql`
+Please, update the  `config/config.yaml` with your database data
 
 ## Application
 
