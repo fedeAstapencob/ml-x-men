@@ -19,7 +19,7 @@ type DBConfig struct {
 	Port     uint   `yaml:"port"`
 }
 type APIConfig struct {
-	Port      int `yaml:"port"`
+	Port       int    `yaml:"port"`
 	ServerMode string `yaml:"ginServerMode"`
 }
 type Config struct {
@@ -37,7 +37,7 @@ var envFuncMapper = map[string]envFn{
 	"DATABASE_PORT":     overrideDatabasePort,
 	"DATABASE_NAME":     overrideDatabaseName,
 	"DATABASE_PASSWORD": overrideDatabasePassword,
-	"PORT": overrideAPIPort,
+	"PORT":              overrideAPIPort,
 }
 
 func New() *Config {
@@ -127,6 +127,7 @@ func overrideDatabasePassword(password string) error {
 	}
 	return fmt.Errorf("DATABASE PASSWORD ENV NOT FOUND")
 }
+
 // Override database password env if variable exists
 func overrideAPIPort(port string) error {
 	if port != "" {

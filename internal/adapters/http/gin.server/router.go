@@ -13,8 +13,10 @@ type RouterHandler struct {
 	Logger    application.Logger
 }
 
-func NewRouter() RouterHandler {
-	return RouterHandler{}
+func NewRouter(i application.Handler) RouterHandler {
+	return RouterHandler{
+		ucHandler: i,
+	}
 }
 
 func NewRouterWithLogger(i application.Handler, logger application.Logger) RouterHandler {

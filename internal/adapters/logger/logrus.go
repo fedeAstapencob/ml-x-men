@@ -2,6 +2,7 @@ package logger
 
 import (
 	"github.com/sirupsen/logrus"
+	"log"
 	"ml-x-men/internal/application"
 )
 
@@ -53,4 +54,10 @@ func (l LogrusLogger) Log(args ...interface{}) {
 //fixme
 func (l LogrusLogger) newLog(err error, usecase interface{}) {
 	l.Logger.WithError(err).Error(usecase)
+}
+
+type SimpleLogger struct{}
+
+func (l SimpleLogger) Log(args ...interface{}) {
+	log.Println(args...)
 }
