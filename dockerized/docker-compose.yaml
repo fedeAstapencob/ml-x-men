@@ -1,0 +1,15 @@
+version: "3.9"
+services:
+  # Mysql
+  x_men_mysql_db:
+    image: mysql:8.0.17
+    container_name: x_men_mysql_db
+    hostname: localhost
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${DB_HOST_PORT}:3306"
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d

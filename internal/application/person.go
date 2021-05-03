@@ -8,7 +8,7 @@ var (
 )
 
 func (i interactor) IsMutant(matrix [][]byte) (bool, error) {
-	isMutant := searchWordInMatrix(matrix)
+	isMutant := isMutantPerson(matrix)
 	return isMutant, nil
 }
 
@@ -21,10 +21,10 @@ func (i interactor) PersonCreate(dna string, isMutant bool) (*domain.Person, err
 
 }
 
-func searchWordInMatrix(matrix [][]byte) bool {
+func isMutantPerson(matrix [][]byte) bool {
 	for i := 0; i < len(matrix); i++ {
 		for j := 0; j < len(matrix[0]); j++ {
-			if searchStringInMatrix(matrix, i, j, matrix[i][j], 4) {
+			if searchLetterInMatrix(matrix, i, j, matrix[i][j], 4) {
 				return true
 			}
 		}
@@ -32,7 +32,7 @@ func searchWordInMatrix(matrix [][]byte) bool {
 	return false
 }
 
-func searchStringInMatrix(matrix [][]byte, row int, col int, letter byte, searchLength int) bool {
+func searchLetterInMatrix(matrix [][]byte, row int, col int, letter byte, searchLength int) bool {
 
 	// search same value in all possible directions
 	for i := 0; i < 8; i++ {
